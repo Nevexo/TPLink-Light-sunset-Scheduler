@@ -17,6 +17,13 @@ Now you'll need to configure it.
 
 Find your longitude and latitude (http://www.latlong.net/) and place them in the config. I shouldn't have to tell you where they go.
 
+Now you've done that, it should find your bulb on it's own (unless you reconfigure it (https://github.com/Nevexo/TPLink-Light-sunset-Scheduler/blob/master/README.md#what-everything-else-does))
+
+To start it, run
+```
+node setrise.js
+```
+
 # What everything else does
 
 ```
