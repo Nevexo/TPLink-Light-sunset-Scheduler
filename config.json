@@ -1,0 +1,8 @@
+{
+    "autoScan": false,
+    "lampIP": "",
+    "longitude": "",
+    "latitude": "",
+    "reinitialize": "15",
+    "autoReset": true
+}
