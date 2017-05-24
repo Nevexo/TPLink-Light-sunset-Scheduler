@@ -1,6 +1,6 @@
 {
-    "autoScan": false,
-    "lampIP": "10.0.0.141",
+    "autoScan": true,
+    "lampIP": "",
     "longitude": "-2.768112",
     "latitude": "54.127363",
     "reinitialize": "15",
