@@ -1,0 +1,18 @@
+{
+  "name": "tplink-sunset",
+  "version": "1.0.0",
+  "description": "A dogey program that turns on your TP-Link light bulb automatically based on the sun-set, two hours before, one hour before, sunset and dims the light automatically 2 hours after (configurable)",
+  "main": "setrise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/Nevexo/TPLink-Light-sunset-Scheduler"
+  },
+  "keywords": [
+    "TP-Link"
+  ],
+  "author": "Nevexo",
+  "license": "ISC"
+}
