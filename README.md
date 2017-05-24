@@ -24,6 +24,7 @@ To start it, run
 node setrise.js
 ```
 
+![probably deleted this image by accident. I'll fix it one day](http://nev.lovewump.us/FxhXY7gvk.png)
 # What everything else does
 
 ```
