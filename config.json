@@ -1,8 +1,8 @@
 {
     "autoScan": true,
     "lampIP": "",
-    "longitude": "-2.768112",
-    "latitude": "54.127363",
+    "longitude": "",
+    "latitude": "",
     "reinitialize": "15",
     "autoReset": true,
     "dimAfterTwoHours": true
