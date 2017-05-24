@@ -62,10 +62,13 @@ function init(lamp) {
             console.log("[DEBUG] Updating brightness to 90% (ACTIVE) (SUNSET) ...".bgYellow)
             ignite('90', lamp, sunset, true)
         })
-        var twoHoursAfter = schedule.scheduleJob('0 '+time[1] + ' ' + twoHoursAfter.toString() + ' * * *', function() {
-            console.log("[DEBUG] Updating brightness to 30% (ACTIVE) (TWO HOURS AFTER SUNSET)".bgYellow)
-            ignite('30', lamp, twoHoursAfter, true)
-        })
+        if (config.dimAfterTwoHours) {
+            var twoHoursAfter = schedule.scheduleJob('0 '+time[1] + ' ' + twoHoursAfter.toString() + ' * * *', function() {
+                console.log("[DEBUG] Updating brightness to 30% (ACTIVE) (TWO HOURS AFTER SUNSET)".bgYellow)
+                ignite('30', lamp, twoHoursAfter, true)
+            })
+        }
+
 
     })
 }
