@@ -47,7 +47,6 @@ function init(lamp) {
         var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0]) + parseInt(2)
-        console.log(twoHoursAfter)
         var twoHoursBefore = schedule.scheduleJob('0 '+time[1] + ' ' + twoHoursBefore.toString() + ' * * *', function(){
             console.log("[DEBUG] Powering up lamp at brightness, 30% (ACTIVATING) (TWO HOURS BEFORE SUNSET)".bgYellow)
             ignite('30', lamp, twoHoursBefore, true)
@@ -63,7 +62,6 @@ function init(lamp) {
             ignite('90', lamp, sunset, true)
         })
         if (config.dimAfterTwoHours) {
-            console.log("Created")
             var twoHoursAfter = schedule.scheduleJob('0 '+ time[1] + ' ' + twoHoursAfter.toString() + ' * * *', function() {
                 console.log("[DEBUG] Updating brightness to 30% (ACTIVE) (TWO HOURS AFTER SUNSET)".bgYellow)
                 ignite('30', lamp, twoHoursAfter, true)
