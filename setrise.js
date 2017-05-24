@@ -44,7 +44,6 @@ function init(lamp) {
             time.push(content.toString());
         }
         time.push(data[1])
-        time = ['20', '59']
         var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0] + 2)
