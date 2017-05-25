@@ -4,15 +4,17 @@ A dogey, skratty program to turn your TP-Link smart light on when it's around th
 # Configuring this to work
 Wow, you're really using it?
 
-Okay then. Make sure you have colors installed
+Okay then. Let's install all of the stuff this project needs, for each of the dependencies in this list type
 ```
-npm install --save colors
+npm install --save [name]
 ```
-Yes, I like a beautiful flashy console.
-And you'll need this awesome libary by https://github.com/konsumer/ to control your TP-Link light
 ```
-npm install --save tplink-lightbulb
+colors
+request
+node-schedule
+tplink-lightbulb
 ```
+(An option to turn off the colours in the output is coming soon as PuTTY and some other programs stugle to dislpay it.)
 Now you'll need to configure it.
 
 Find your longitude and latitude (http://www.latlong.net/) and place them in the config. I shouldn't have to tell you where they go.
