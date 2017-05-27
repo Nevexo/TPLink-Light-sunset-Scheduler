@@ -50,7 +50,7 @@ function init(lamp) {
         }
         time[0] = data.toString()
         console.log(time)
-        console.log("The sun will set at " + time[0] + ":" + time[1] + "Timezone configured: ")
+        console.log("The sun will set at " + time[0] + ":" + time[1])
         var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0]) + parseInt(2)
