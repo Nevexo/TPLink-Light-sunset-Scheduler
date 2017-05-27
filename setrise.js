@@ -3,7 +3,7 @@ const Bulb = require('tplink-lightbulb')
 const config = require("./config.json"); //Make sure the config exists.
 var schedule = require('node-schedule');
 var color = require('colors');
-var version = 1.2;
+var version = 1.5;
 console.log("[DEBUG] Setrise daemon is starting.".bgYellow)
 console.log("[DAEMON] Version -> " +  version + " LAT -> " + config.latitude + " LONG -> " + config.longitude)
 var endpoint = 'https://api.sunrise-sunset.org/json?'
@@ -32,7 +32,6 @@ function init(lamp) {
         url: endpoint + "lat=" + config.latitude + "&lng=" + config.longitude + "&date=today",
         json: true
     }, function (error, response, body) {
-        console.log("The sun will set at " + body.results.sunset + " the light will power up 2 hours before, 1 hour before, at sunset and dim at 2 hours after.")
         var data = body.results.sunset
         var data = data.split(":")
         var time = []
@@ -44,6 +43,14 @@ function init(lamp) {
             time.push(content.toString());
         }
         time.push(data[1])
+        if (config.time_offset.plus_minus == "+") {
+            data = parseInt(time[0]) + parseInt(config.time_offset.offset)
+        }else {
+            data = parseInt(time[0]) - parseInt(config.time_offset.offset)
+        }
+        time[0] = data.toString()
+        console.log(time)
+        console.log("The sun will set at " + time[0] + ":" + time[1] + "Timezone configured: ")
         var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0]) + parseInt(2)
