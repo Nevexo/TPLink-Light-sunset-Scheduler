@@ -5,5 +5,9 @@
     "latitude": "",
     "reinitialize": "15",
     "autoReset": true,
-    "dimAfterTwoHours": true
+    "dimAfterTwoHours": true,
+    "time_offset": {
+        "plus_minus": "+",
+        "offset": 1
+    }
 }
