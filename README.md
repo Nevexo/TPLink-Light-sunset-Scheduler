@@ -21,12 +21,27 @@ Find your longitude and latitude (http://www.latlong.net/) and place them in the
 
 Now you've done that, it should find your bulb on it's own (unless you reconfigure it (https://github.com/Nevexo/TPLink-Light-sunset-Scheduler/blob/master/README.md#what-everything-else-does))
 
+This uses the UTC time zone, if you need something else see https://github.com/Nevexo/TPLink-Light-sunset-Scheduler/blob/master/README.md#utc-offset
+
 To start it, run
 ```
 node setrise.js
 ```
 
 ![probably deleted this image by accident. I'll fix it one day](http://nev.lovewump.us/FxhXY7gvk.png)
+
+# UTC offset
+```
+time_offset (GROUP)
+```
+The API used to get the sunset time uses the UTC timezone, to make this program work in different places around the globe, you can offset the time.
+
+Set 'plus_minus' to either a + or a - depending on if you're behind UTC or ahead
+
+Set 'offset' to how many hours (plus or minus) you are away from UTC.
+
+If you use UTC, set the offset to 0 and leave it on + or -
+
 # What everything else does
 
 ```
