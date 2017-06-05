@@ -8,6 +8,6 @@
     "dimAfterTwoHours": true,
     "time_offset": {
         "plus_minus": "+",
-        "offset": 1
+        "offset": 0
     }
 }
