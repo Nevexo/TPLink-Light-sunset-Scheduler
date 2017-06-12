@@ -6,14 +6,16 @@ var color = require('colors');
 var version = 1.5;
 console.log("[DEBUG] Setrise daemon is starting.".bgYellow)
 console.log("[DAEMON] Version -> " +  version + " LAT -> " + config.latitude + " LONG -> " + config.longitude)
-var endpoint = 'https://api.sunrise-sunset.org/json?' //Server to get the sunset time. 
+var endpoint = 'https://api.sunrise-sunset.org/json?'
+if (config.buzzingMitigation) {
+  console.log("[ALERT] Lamp buzzing mitigation is enabled. The light will ramp up faster.")
+}
 
-
-function ignite(brightness, lampObject, calledFrom, expireSched) { //Send the statup command to the bulb, requires the brightness, a lamp (object), the function it was called from (for the callback) and expireSched is a bool to delete the JS Schedule after the process completes.
+function ignite(brightness, lampObject, calledFrom, expireSched) {
     const options = {}
     options.brightness = parseInt(brightness)
-    lampObject.set(true, 200, options)//Call the lamp startup 
-    .then(status => { //PROMISE from lamp
+    lampObject.set(true, 200, options)
+    .then(status => {
         if (status.on_off == 1) {
             console.log("[SUCCESS] The light ignited at " + options.brightness + "% brightness!")
             if (expireSched == true) {
@@ -21,13 +23,13 @@ function ignite(brightness, lampObject, calledFrom, expireSched) { //Send the st
                 calledFrom.cancel()
             }
 
-        }else { //Raised if the lamp didn't response 
+        }else {
             console.log("[FAIL] The lamp reported an off state. Maybe the connection was dropped?".bgRed)
         }
     })
 }
 
-function init(lamp) { //Configure the JS schedules to turn the light on at the required times.
+function init(lamp) {
     request({
         url: endpoint + "lat=" + config.latitude + "&lng=" + config.longitude + "&date=today",
         json: true
@@ -35,7 +37,7 @@ function init(lamp) { //Configure the JS schedules to turn the light on at the r
         var data = body.results.sunset
         var data = data.split(":")
         var time = []
-        if (data[2].substring(3) == "PM") { //The sunset API only uses 12hr, so this converts it. (Node uses 24hr)
+        if (data[2].substring(3) == "PM") {
             var content = parseInt(data[0]) + 12
             time.push(content.toString());
         }else {
@@ -43,34 +45,48 @@ function init(lamp) { //Configure the JS schedules to turn the light on at the r
             time.push(content.toString());
         }
         time.push(data[1])
-        if (config.time_offset.plus_minus == "+") { //Do the UTC offset stuff
+        if (config.time_offset.plus_minus == "+") {
             data = parseInt(time[0]) + parseInt(config.time_offset.offset)
         }else {
             data = parseInt(time[0]) - parseInt(config.time_offset.offset)
         }
         time[0] = data.toString()
-        console.log(time) //Debugging stuff, it prints out the time array
-        console.log("The sun will set at " + time[0] + ":" + time[1])
-        var twoHoursBefore = parseInt(time[0] - 2)//Configure times to start lamp
+        console.log(time)
+        console.log("The sun will set at " + time[0] + ":" + time[1] + "Timezone configured: ")
+        var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0]) + parseInt(2)
-        var twoHoursBefore = schedule.scheduleJob('0 '+time[1] + ' ' + twoHoursBefore.toString() + ' * * *', function(){ //Create the two hours before sched
-            console.log("[DEBUG] Powering up lamp at brightness, 30% (ACTIVATING) (TWO HOURS BEFORE SUNSET)".bgYellow)
-            ignite('30', lamp, twoHoursBefore, true)
+        var twoHoursBefore = schedule.scheduleJob('0 '+time[1] + ' ' + twoHoursBefore.toString() + ' * * *', function(){
+            console.log("[DEBUG] Two hours before sunset, starting up!".bgYellow)
+            if (config.buzzingMitigation) {
+                ignite('45', lamp, twoHoursBefore, true)
+            }else {
+                ignite('30', lamp, twoHoursBefore, true)
+            }
 
             });
-        var oneHourBefore = schedule.scheduleJob('0 '+time[1] + ' ' + oneHourBefore.toString() + ' * * *', function(){ //Create the one hour before shec
-            console.log("[DEBUG] Updating brightness to 50% (ACTIVE) (ONE HOUR UNTIL SUNSET)".bgYellow)
-            ignite('50', lamp, oneHourBefore, true)
+        var oneHourBefore = schedule.scheduleJob('0 '+time[1] + ' ' + oneHourBefore.toString() + ' * * *', function(){
+            console.log("[DEBUG] One hour before sunset, ramping up brightness.".bgYellow)
+            if (config.buzzingMitigation) {
+              ignite('70', lamp, oneHourBefore, true)
+            }else {
+              ignite('50', lamp, oneHourBefore, true)
+            }
+
 
         });
-        var sunset = schedule.scheduleJob('0 '+time[1] + ' ' + time[0] + ' * * *', function() { //Set the sched for sunset
-            console.log("[DEBUG] Updating brightness to 90% (ACTIVE) (SUNSET) ...".bgYellow)
-            ignite('90', lamp, sunset, true)
+        var sunset = schedule.scheduleJob('0 '+time[1] + ' ' + time[0] + ' * * *', function() {
+            console.log("[DEBUG] Sunset event rasied, ramping up.".bgYellow)
+            if (config.buzzingMitigation) {
+              ignite('100', lamp, sunset, true)
+            }else{
+              ignite('90', lamp, sunset, true)
+            }
+
         })
         if (config.dimAfterTwoHours) {
             var twoHoursAfter = schedule.scheduleJob('0 '+ time[1] + ' ' + twoHoursAfter.toString() + ' * * *', function() {
-                console.log("[DEBUG] Updating brightness to 30% (ACTIVE) (TWO HOURS AFTER SUNSET)".bgYellow)
+                console.log("[DEBUG] Two hours after sunset, dimming lamps. (Ignoring buzzing mitigation)".bgYellow)
                 ignite('30', lamp, twoHoursAfter, true)
             })
         }
@@ -87,7 +103,7 @@ if (config.autoReset) { //reinitialize automatically every time the time is conf
 }
 
 
-if (config.autoScan) {  //Locate the lamps on startup (if config says to)
+if (config.autoScan) {
     const scan = Bulb.scan()
   .on('light', light => {
     light.info()
@@ -98,7 +114,7 @@ if (config.autoScan) {  //Locate the lamps on startup (if config says to)
         var lamp = light //Create lamp object
       })
   })
-}else { //configure the lamp based off the ip in config (rasied if autoScan is false)
+}else {
     var lamp = new Bulb(config.lampIP) //Configure the lamp without autoScan
     lamp.info()
     .then(status => {
