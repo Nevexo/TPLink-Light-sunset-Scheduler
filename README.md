@@ -64,5 +64,9 @@ This is the hour (in 24hr time format) that the system should check for a new su
 dimAfterTwoHours
 ```
 When set to true, this sets your lights to 30% 2 hours after the sun goes down.
+```
+buzzingMitigation
+```
+As with normal dimming lights, when not running at 100% brightness the internal transformer makes a buzzing sound, enabling buzzingMitigation will ramp the lights brightness up quicker, to keep the sound level to a minimum. At sunset the light will be on at exactly 100% where the transformer will be silent.
 
 And that's it, it's a huge doge-job of a program and probably won't work for long.
