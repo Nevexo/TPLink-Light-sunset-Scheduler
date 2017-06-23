@@ -14,7 +14,7 @@ request
 node-schedule
 tplink-lightbulb
 ```
-(An option to turn off the colours in the output is coming soon as PuTTY and some other programs stugle to dislpay it.)
+(An option to turn off the colours in the output is coming soon as PuTTY and some other programs struggle to display it.)
 Now you'll need to configure it.
 
 Find your longitude and latitude (http://www.latlong.net/) and place them in the config. I shouldn't have to tell you where they go.
