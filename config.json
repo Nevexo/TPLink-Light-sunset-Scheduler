@@ -1,10 +1,10 @@
 {
-    "autoScan": false,
-    "lampIP": "10.0.0.141",
-    "longitude": "-2.768112",
-    "latitude": "54.127363",
+    "autoScan": true,
+    "lampIP": "",
+    "longitude": "",
+    "latitude": "",
     "reinitialize": "15",
-    "autoReset": false,
+    "autoReset": true,
     "dimAfterTwoHours": true,
     "time_offset": {
         "plus_minus": "+",
