@@ -2,12 +2,18 @@ var request = require('request');
 const Bulb = require('tplink-lightbulb')
 const config = require("./config.json"); //Make sure the config exists.
 var schedule = require('node-schedule');
-var color = require('colors');
+if (config.useColors) {
+   var color = require('colors');
+}
+
 var version = 1.5;
 console.log("[DEBUG] Setrise daemon is starting.".bgYellow)
 console.log("[DAEMON] Version -> " +  version + " LAT -> " + config.latitude + " LONG -> " + config.longitude)
 var endpoint = 'https://api.sunrise-sunset.org/json?'
 if (config.buzzingMitigation) {
+    if (config.dimAfterTwoHours) {
+        console.log("[WARNING] Buzzing mitigation and dim after two hours are enabled! The lamp will Buzz after the two hours!".bgYellow)
+    }
   console.log("[ALERT] Lamp buzzing mitigation is enabled. The light will ramp up faster.")
 }
 
@@ -19,8 +25,13 @@ function ignite(brightness, lampObject, calledFrom, expireSched) {
         if (status.on_off == 1) {
             console.log("[SUCCESS] The light ignited at " + options.brightness + "% brightness!")
             if (expireSched == true) {
-                console.log("[DEBUG] Ending the schedule, it will respawn at " + config.reinitialize + ":00 tomorrow. (AUTO MODE)")
-                calledFrom.cancel()
+                if (config.autoReset) {
+                    console.log("[DEBUG] Ending the schedule, it will respawn at " + config.reinitialize + ":00 tomorrow. (AUTO MODE)")
+                }else {
+                    console.log("[DEBUG] Ending the schedule, it will not respawn as autoReset is false")
+                }
+
+                calledFrom.cancel() //End schedule
             }
 
         }else {
@@ -52,7 +63,7 @@ function init(lamp) {
         }
         time[0] = data.toString()
         console.log(time)
-        console.log("The sun will set at " + time[0] + ":" + time[1] + "Timezone configured: ")
+        console.log("The sun will set at " + time[0] + ":" + time[1] + " Timezone configured: UTC" + config.time_offset.plus_minus + config.time_offset.offset)
         var twoHoursBefore = parseInt(time[0] - 2)
         var oneHourBefore = parseInt(time[0] - 1)
         var twoHoursAfter = parseInt(time[0]) + parseInt(2)
@@ -104,13 +115,14 @@ if (config.autoReset) { //reinitialize automatically every time the time is conf
 
 
 if (config.autoScan) {
+    console.log("Auto scan is enabled. Locating bulbs...".bgYellow)
     const scan = Bulb.scan()
   .on('light', light => {
     light.info()
       .then(status => {
         scan.stop()
         console.log("Found a lamp!.".bgGreen)
-        console.log("[LAMP] Found lamp model: "+status.model + " with the alias: " + status.alias)
+        console.log("[LAMP] Found lamp! Model: "+status.model + " with the alias: " + status.alias)
         var lamp = light //Create lamp object
       })
   })
@@ -123,3 +135,4 @@ if (config.autoScan) {
 }
 
 init(lamp) //initialize the program.
+console.log("Initlization complete!")
