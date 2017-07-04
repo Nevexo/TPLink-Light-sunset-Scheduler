@@ -5,10 +5,11 @@
     "latitude": "54.127363",
     "reinitialize": "15",
     "autoReset": false,
-    "dimAfterTwoHours": false,
+    "dimAfterTwoHours": true,
     "time_offset": {
         "plus_minus": "+",
         "offset": 1
     },
-    "buzzingMitigation": false
+    "useColors": true,
+    "buzzingMitigation": true
 }
